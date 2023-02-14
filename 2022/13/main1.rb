@@ -13,7 +13,7 @@ def compare(l, r)
       vl = [vl] if !vl.is_a?(Array)
       vr = [vr] if !vr.is_a?(Array)
       result = compare(vl, vr)
-      return true if result
+      return result if [true, false].include?(result)
     end
   end
 end
