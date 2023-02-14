@@ -1,7 +1,7 @@
 require 'set'
 require 'json'
 
-def compare(l, r)
+def compare(l, r, r_level=0)
   sleep 0.5 ; p l ; p r ; p '==='
   while l.any? && r.any?
     vl, vr = l.shift, r.shift
@@ -12,9 +12,13 @@ def compare(l, r)
     else
       vl = [vl] if !vl.is_a?(Array)
       vr = [vr] if !vr.is_a?(Array)
-      result = compare(vl, vr)
+      result = compare(vl, vr, r_level + 1)
       return result if [true, false].include?(result)
     end
+  end
+  if r_level == 0
+    return true if l.empty?
+    # return false if right.empty?
   end
 end
 
