@@ -9,6 +9,11 @@ def compare(l, r)
     if vl.is_a?(Integer) && vr.is_a?(Integer)
       return true if vl < vr
       return false if vl > vr
+    else
+      vl = [vl] if !vl.is_a?(Array)
+      vr = [vr] if !vr.is_a?(Array)
+      result = compare(vl, vr)
+      return true if result
     end
   end
 end
