@@ -1,8 +1,8 @@
 require 'set'
 require 'json'
 
-def compare(l, r, r_level=0)
-  p l ; p r ; p r_level ; p '- ' * 20
+def ordered?(l, r)
+  # p l ; p r ; p r_level ; p '- ' * 20
   while l.any? && r.any?
     vl, vr = l.shift, r.shift
     if vl.is_a?(Integer) && vr.is_a?(Integer)
@@ -11,7 +11,7 @@ def compare(l, r, r_level=0)
     else
       vl = [vl] if !vl.is_a?(Array)
       vr = [vr] if !vr.is_a?(Array)
-      result = compare(vl, vr, r_level + 1)
+      result = ordered?(vl, vr)
       return result if [true, false].include?(result)
     end
   end
@@ -27,7 +27,22 @@ File.readlines(ARGV[0], chomp: true).each do |line|
   end
 end
 
-l, r = items.shift(2)
-p "compare: #{compare(l,r)}"
+# l, r = items.shift(2)
+# p "compare: #{compare(l,r)}"
 
-exit 0
+total = 0
+indexes = Array(0...items.size)
+pairs = indexes.each_slice(2)
+pairs.each_with_index do |pair, index|
+  l, r = pair
+  if ordered?(items[l],items[r])
+    p(index+1)
+    total += (index + 1)
+  end
+end
+
+p total
+
+
+
+
