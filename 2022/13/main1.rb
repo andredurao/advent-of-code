@@ -2,10 +2,9 @@ require 'set'
 require 'json'
 
 def compare(l, r, r_level=0)
-  sleep 0.5 ; p l ; p r ; p '==='
+  p l ; p r ; p r_level ; p '- ' * 20
   while l.any? && r.any?
     vl, vr = l.shift, r.shift
-    p [vl, vr]
     if vl.is_a?(Integer) && vr.is_a?(Integer)
       return true if vl < vr
       return false if vl > vr
@@ -16,10 +15,8 @@ def compare(l, r, r_level=0)
       return result if [true, false].include?(result)
     end
   end
-  if r_level == 0
-    return true if l.empty?
-    return false if r.empty?
-  end
+  return true if l.empty?
+  return false if r.empty?
 end
 
 
