@@ -18,7 +18,7 @@ def compare(l, r, r_level=0)
   end
   if r_level == 0
     return true if l.empty?
-    # return false if right.empty?
+    return false if r.empty?
   end
 end
 
