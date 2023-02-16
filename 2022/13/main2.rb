@@ -2,7 +2,7 @@ require 'set'
 require 'json'
 
 def ordered?(l, r)
-  # p l ; p r ; p r_level ; p '- ' * 20
+  # p l ; p r ; p '- ' * 20
   while l.any? && r.any?
     vl, vr = l.shift, r.shift
     if vl.is_a?(Integer) && vr.is_a?(Integer)
@@ -15,14 +15,19 @@ def ordered?(l, r)
       return result if [true, false].include?(result)
     end
   end
-  return true if l.empty?
-  return false if r.empty?
+  # the && ...any? should be present in part1 also
+  return true if l.empty? && r.any?
+  return false if r.empty? && l.any?
 end
 
-def list_items(items)
-  p '- ' * 40
-  items.each{|item| p item}
-  p '- ' * 40
+def smaller(items)
+  index = 0
+  1.upto(items.size - 1) do |i|
+    v1 = JSON::parse("#{items[index]}")
+    v2 = JSON::parse("#{items[i]}")
+    index = i if !ordered?(v1, v2)
+  end
+  index
 end
 
 items = [[[2]],[[6]]]
@@ -33,21 +38,16 @@ File.readlines(ARGV[0], chomp: true).each do |line|
 end
 
 sorted_items = []
-# selection sort
-while items.any?
-  cursor_index = 0
-  # json parse hack to deep dup arrays
-  cursor = JSON::parse("#{items[0]}")
-  list_items(items)
-  1.upto(items.size - 1) do |j|
-    current = JSON::parse("#{items[j]}")
-    if !ordered?(cursor.dup, current.dup)
-      cursor = current
-      cursor_index = j
-    end
-  end
-  sorted_items << JSON::parse("#{items[cursor_index]}")
-  items.delete_at(cursor_index)
+while items.any? do
+  index = smaller(items)
+  sorted_items << JSON::parse("#{items[index]}")
+  items.delete_at(index)
 end
 
-list_items(sorted_items)
+indexes = []
+sorted_items.each_index do |index|
+  indexes << (index + 1) if [[[2]],[[6]]].include?(sorted_items[index])
+end
+
+p indexes
+p indexes.reduce(:*)
