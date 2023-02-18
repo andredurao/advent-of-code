@@ -11,8 +11,11 @@ def limit_values(paths)
   [min_x, min_y, max_x, max_y]
 end
 
-def print_map(map)
-  map.each{|line| puts(line.join)}
+def print_map(map, pos1, pos2)
+  p '- ' * 50
+  pos1[1].upto(pos2[1]) do |i|
+    puts map[i][pos1[0]..pos2[0]].join
+  end
 end
 
 def draw(map, paths)
@@ -20,11 +23,9 @@ def draw(map, paths)
     prev = nil
     path.each do |x,y|
       if prev
-        p "#{prev}->#{[x,y]}"
         px, py = prev
         [px,x].min.upto([px,x].max) do |j|
           [py,y].min.upto([py,y].max) do |i|
-            p [i,j]
             map[i][j] = '#'
           end
         end
@@ -34,27 +35,60 @@ def draw(map, paths)
   end
 end
 
+# ================================================================
+
+class Grain
+  attr_accessor :map, :i, :j
+  def initialize(map, pos)
+    @map = map
+    @j, @i = pos
+  end
+
+  def move
+    while n = next_pos
+      @i, @j = n
+      break if @i >= 180
+    end
+    [i,j]
+  end
+
+  def next_pos
+    if map[i + 1][j] == '.'
+      [i+1, j]
+    elsif map[i + 1][j - 1] == '.'
+      [i+1, j - 1]
+    elsif map[i + 1][j + 1] == '.'
+      [i+1, j + 1]
+    end
+  end
+end
+
+# ================================================================
+
 paths = []
 File.readlines(ARGV[0], chomp: true).each do |line|
   items = line.split(' -> ').map{|pos| pos.split(',').map(&:to_i)}
   paths << items
 end
 
-min_x, min_y, max_x, max_y = limit_values(paths)
+map = Array.new(185) { Array.new(600) { '.' } }
 
-# remap slide map to leftmost position
-new_paths = paths.map do |positions|
-  positions.map do |x,y|
-    [x - min_x + 2, y]
+draw(map, paths)
+
+# print_map(map, [490,0], [510, 10])
+
+count = 0
+while true do
+  grain = Grain.new(map, [500,0])
+  i, j = grain.move
+  break if i >= 180
+  map[i][j] = 'o'
+  count += 1
+  if ENV['DEBUG']
+    puts `clear`
+    print_map(map, [490,0], [510, 10])
+    sleep 0.1
   end
 end
 
-p new_paths
-
-min_x, min_y, max_x, max_y = limit_values(new_paths)
-
-map = Array.new(max_y + 1, [' '] * (max_x + 1))
-
-draw(map, new_paths)
-
-print_map(map)
+p count
