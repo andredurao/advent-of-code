@@ -9,20 +9,52 @@ import (
 	"strings"
 )
 
+// usage ./main filename, ex: ./main input
 func main() {
 	part1()
+	part2()
 }
 
 func part1() {
 	total := 0
 	for _, room := range lines() {
 		sector, valid := isValidChecksum(room)
-		fmt.Println(room, valid)
+		// fmt.Println(room, valid)
 		if valid {
 			total += sector
 		}
 	}
 	fmt.Println(total)
+}
+
+// Executed with grep north
+func part2() {
+	for _, room := range lines() {
+		_, valid := isValidChecksum(room)
+		if valid {
+			decrypted := rotateChars(room)
+			fmt.Println(room, decrypted)
+		}
+	}
+}
+
+func rotateChars(room string) string {
+	re := regexp.MustCompile(`(\w+)`)
+	words := re.FindAllString(room, -1)
+	count, _ := strconv.Atoi(words[len(words)-2])
+	result := ""
+
+	for i, word := range words {
+		if i == len(words)-1 {
+			break
+		}
+		for _, char := range word {
+			newChar := ((int(rune(char)) - 97) + count) % 26
+			result = result + string(rune(newChar+97))
+		}
+		result = result + " "
+	}
+	return result
 }
 
 func isValidChecksum(room string) (int, bool) {
