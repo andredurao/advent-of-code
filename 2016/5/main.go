@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 )
 
 // usage ./main abc
 func main() {
 	part1()
+	part2()
 }
 
 func part1() {
@@ -23,6 +25,24 @@ func part1() {
 		start = i + 1
 	}
 	fmt.Println(passwd)
+}
+
+func part2() {
+	room := os.Args[1]
+	passwd := make([]rune, 8)
+	start := 0
+	size := 0
+	for size < 8 {
+		str, i := lookupChar(room, start)
+		// fmt.Println(str, i)
+		index, err := strconv.Atoi(string(str[5]))
+		if index < 8 && passwd[index] == 0 && err == nil {
+			size++
+			passwd[index] = rune(str[6])
+		}
+		start = i + 1
+	}
+	fmt.Println(string(passwd))
 }
 
 func lookupChar(room string, start int) (string, int) {
