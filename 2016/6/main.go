@@ -11,6 +11,7 @@ var lines []string
 // usage ./main filename
 func main() {
 	part1()
+	part2()
 }
 
 func part1() {
@@ -22,6 +23,19 @@ func part1() {
 	for i := range lines[0] {
 		charMap := frequencies(lines, i)
 		code = code + string(mostFrequentChar(charMap))
+	}
+	fmt.Println(code)
+}
+
+func part2() {
+	filename := os.Args[1]
+	content, _ := os.ReadFile(filename)
+	lines = strings.Split(string(content), "\n")
+
+	code := ""
+	for i := range lines[0] {
+		charMap := frequencies(lines, i)
+		code = code + string(leastFrequentChar(charMap))
 	}
 	fmt.Println(code)
 }
@@ -51,6 +65,18 @@ func mostFrequentChar(charMap map[rune]int) rune {
 		if count > max {
 			result = char
 			max = count
+		}
+	}
+	return result
+}
+
+func leastFrequentChar(charMap map[rune]int) rune {
+	min := 0
+	result := '0'
+	for char, count := range charMap {
+		if count < min || min == 0 {
+			result = char
+			min = count
 		}
 	}
 	return result
