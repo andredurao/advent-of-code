@@ -12,6 +12,7 @@ var lines []string
 func main() {
 	ReadLines()
 	Part1()
+	Part2()
 }
 
 func ReadLines() {
@@ -24,6 +25,17 @@ func Part1() {
 	total := 0
 	for _, line := range lines {
 		if isTLS(line) {
+			total++
+		}
+	}
+	fmt.Println(total)
+}
+
+func Part2() {
+	// fmt.Println(invert("PAN"))
+	total := 0
+	for _, line := range lines {
+		if isSSL(line) {
 			total++
 		}
 	}
@@ -48,6 +60,33 @@ func isTLS(line string) bool {
 	}
 
 	return false
+}
+
+func isSSL(line string) bool {
+	blocks := splitLine(line)
+	abaMap := make(map[string]struct{}, 0)
+
+	// strings outside square braces
+	for _, block := range blocks[0] {
+		for _, aba := range getAbas(block) {
+			abaMap[invert(aba)] = struct{}{}
+		}
+	}
+
+	// lookup
+	for _, block := range blocks[1] {
+		for aba := range abaMap {
+			if strings.Index(block, aba) != -1 {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func invert(str string) string {
+	return string(str[1]) + string(str[0]) + string(str[1])
 }
 
 func splitLine(line string) [][]string {
@@ -82,4 +121,20 @@ func hasAbba(str string) bool {
 	}
 
 	return false
+}
+
+func getAbas(str string) []string {
+	result := make([]string, 0)
+	if len(str) < 3 {
+		return result
+	}
+
+	for i := 0; i+3 <= len(str); i++ {
+		subStr := str[i : i+3]
+		if subStr[0] == subStr[2] && subStr[0] != subStr[1] {
+			result = append(result, subStr)
+		}
+	}
+
+	return result
 }
