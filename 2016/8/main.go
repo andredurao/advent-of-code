@@ -20,6 +20,7 @@ func main() {
 	functionsMap["rect"] = rect
 	functionsMap["rotate"] = rotate
 	part1()
+	part2()
 }
 
 func readLines() {
@@ -52,13 +53,9 @@ func printScreen() {
 }
 
 func part1() {
-
 	for _, line := range lines {
 		parse(line)
-		// printScreen()
-		// fmt.Println("- - - - - ")
 	}
-	printScreen()
 	total := 0
 	for i := 0; i < Height; i++ {
 		for j := 0; j < Width; j++ {
@@ -67,7 +64,12 @@ func part1() {
 			}
 		}
 	}
-	fmt.Println("total", total)
+	fmt.Println("part1", total)
+}
+
+func part2() {
+	fmt.Println("part2")
+	printScreen()
 }
 
 func parse(line string) {
