@@ -13,6 +13,7 @@ var lines []string
 func main() {
 	readlines()
 	part1()
+	part2()
 }
 
 func readlines() {
@@ -38,6 +39,26 @@ func part1() {
 		if maxR <= 12 && maxG <= 13 && maxB <= 14 {
 			total += id
 		}
+	}
+	fmt.Println(total)
+}
+
+func part2() {
+	var total int64
+
+	for _, line := range lines {
+		games := games(line)
+		maxR := 0
+		maxG := 0
+		maxB := 0
+		for _, game := range games {
+			r, g, b := gameValues(game)
+			maxR = max(maxR, r)
+			maxG = max(maxG, g)
+			maxB = max(maxB, b)
+		}
+		power := maxR * maxG * maxB
+		total += int64(power)
 	}
 	fmt.Println(total)
 }
