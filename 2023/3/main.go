@@ -13,6 +13,7 @@ var lines []string
 func main() {
 	readlines()
 	part1()
+	part2()
 }
 
 func readlines() {
@@ -22,8 +23,10 @@ func readlines() {
 }
 
 func part1() {
-	// repo := make([][]int, len(lines))
+	fmt.Println("part 1")
+
 	res := 0
+
 	neighborsMap := map[string]int{}
 
 	for i, line := range lines {
@@ -43,6 +46,35 @@ func part1() {
 	for _, v := range neighborsMap {
 		// fmt.Println("vals =>", k, v)
 		res += v
+	}
+	fmt.Println(res)
+}
+
+func part2() {
+	fmt.Println("part 2")
+
+	res := 0
+
+	for i, line := range lines {
+		// fmt.Println("line =>", line)
+		for j, ch := range line {
+			neighborsMap := map[string]int{}
+			if ch == '*' {
+				pos := []int{i, j}
+				for _, neighbor := range neighbors(pos) {
+					if isValisPos(neighbor) && isDigit(neighbor) {
+						storeNumber(neighbor, neighborsMap)
+					}
+				}
+				if len(neighborsMap) > 1 {
+					currentMult := 1
+					for _, val := range neighborsMap {
+						currentMult *= val
+					}
+					res += currentMult
+				}
+			}
+		}
 	}
 	fmt.Println(res)
 }
