@@ -21,7 +21,9 @@ var humidityToLocation [][]int
 // usage ./main filename
 func main() {
 	readlines()
+	loadRanges()
 	part1()
+	part2()
 }
 
 func readlines() {
@@ -30,10 +32,7 @@ func readlines() {
 	lines = lines[:len(lines)-1]
 }
 
-func part1() {
-	fmt.Println("part 1")
-	seeds := getSeeds()
-	fmt.Println(seeds)
+func loadRanges() {
 	seedToSoil = getRanges("seed-to-soil map:")
 	soilToFertilizer = getRanges("soil-to-fertilizer map:")
 	fertilizerToWater = getRanges("fertilizer-to-water map:")
@@ -41,6 +40,12 @@ func part1() {
 	lightToTemperature = getRanges("light-to-temperature map:")
 	temperatureToHumidity = getRanges("temperature-to-humidity map:")
 	humidityToLocation = getRanges("humidity-to-location map:")
+}
+
+func part1() {
+	fmt.Println("part 1")
+	seeds := getSeeds()
+	fmt.Println(seeds)
 
 	res := math.MaxInt32
 
@@ -55,7 +60,45 @@ func part1() {
 		res = min(res, location)
 	}
 	fmt.Println("min location", res)
+}
 
+func part2() {
+	fmt.Println("part 2")
+	seeds := getSeeds()
+	location := 0
+
+	for {
+		humidity := reverseSearchInRange(location, humidityToLocation)
+		temperature := reverseSearchInRange(humidity, temperatureToHumidity)
+		light := reverseSearchInRange(temperature, lightToTemperature)
+		water := reverseSearchInRange(light, waterToLight)
+		fertilizer := reverseSearchInRange(water, fertilizerToWater)
+		soil := reverseSearchInRange(fertilizer, soilToFertilizer)
+		seed := reverseSearchInRange(soil, seedToSoil)
+		for i := 0; i < len(seeds)/2; i++ {
+			start := seeds[i*2]
+			end := seeds[i*2] + seeds[i*2+1] - 1
+			if seed >= start && seed <= end {
+				fmt.Println("min location", location)
+				return
+			}
+		}
+		location++
+	}
+
+}
+
+func reverseSearchInRange(val int, rangeMap [][]int) int {
+	// range: dst src size | 50 98 2 ex: rev(50) -> 98
+	for _, vals := range rangeMap {
+		start := vals[0]
+		end := vals[0] + vals[2]
+		delta := vals[1] - vals[0]
+		if val >= start && val <= end {
+			return val + delta
+		}
+	}
+	return val
 }
 
 func searchInRange(val int, rangeMap [][]int) int {
