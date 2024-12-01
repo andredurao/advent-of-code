@@ -7,12 +7,23 @@ File.readlines(ARGV[0]).map(&:chomp).each do |line|
   d2 << v2.to_i
 end
 
-d1.sort!
-d2.sort!
+sd1 = d1.sort
+sd2 = d2.sort
 res = 0
 
-d1.each_index do |i|
-  res += (d1[i] - d2[i]).abs
+sd1.each_index do |i|
+  res += (sd1[i] - sd2[i]).abs
 end
 
-p res
+p "part1: #{res}"
+
+# Part 2
+
+dc2 = sd2.tally
+res = 0
+
+d1.each do |val, _|
+  res += val * dc2[val] if dc2[val]
+end
+
+p "part2: #{res}"
