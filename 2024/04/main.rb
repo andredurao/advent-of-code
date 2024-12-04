@@ -6,7 +6,7 @@ File.readlines(ARGV[0]).map(&:chomp).each do |line|
 end
 
 # Part 1
-class Solver
+class Solver1
   # ↑↗→↘↓↙←↖
   DIRS = { # I,  J
     '↑' => [-1,  0],
@@ -83,7 +83,70 @@ class Solver
 end
 
 
-solver = Solver.new(charmap:)
+solver = Solver1.new(charmap:)
 total = solver.check
 puts "part1: #{total}"
+
+
+# Part 2
+
+class Solver2
+  # M_M  M_S  S_S  S_M
+  # _A_  _A_  _A_  _A_
+  # S_S  M_S  M_M  S_M
+  COMBINATIONS = [
+    {[0,0] => ?M, [0,2] => ?M, [1,1] => ?A, [2,0] => ?S, [2,2] => ?S},
+    {[0,0] => ?M, [0,2] => ?S, [1,1] => ?A, [2,0] => ?M, [2,2] => ?S},
+    {[0,0] => ?S, [0,2] => ?S, [1,1] => ?A, [2,0] => ?M, [2,2] => ?M},
+    {[0,0] => ?S, [0,2] => ?M, [1,1] => ?A, [2,0] => ?S, [2,2] => ?M},
+  ]
+
+  attr_reader :charmap, :set, :width, :height
+
+  def initialize(charmap:)
+    @charmap = charmap
+    @set = Set.new
+    @width = charmap[0].size
+    @height = charmap.size
+  end
+
+  def valid_pos?(pos)
+    pos[0] >= 0 && pos[0] < height && pos[1] >= 0 && pos[1] < width
+  end
+
+  def pos_index(pos)
+    (pos[0] * height + pos[1]).to_s
+  end
+
+  def check
+    total = 0
+    charmap.each_index do |i|
+      charmap[i].each_index do |j|
+        if xmas?([i,j])
+          total += 1
+        end
+      end
+    end
+    total
+  end
+
+  def xmas?(pos)
+    return false if !valid_pos?([pos[0]+2,pos[1]+2])
+    COMBINATIONS.each do |combination|
+      c = 0
+      combination.each do |inc, ch|
+        # puts "ch: #{ch} mch: #{charmap[pos[0]+inc[0]][pos[1]+inc[1]]}"
+        break if charmap[pos[0]+inc[0]][pos[1]+inc[1]] != ch
+        c += 1
+      end
+      return true if c == 5
+    end
+    false
+  end
+end
+
+
+solver = Solver2.new(charmap:)
+total = solver.check
+puts "part2: #{total}"
 
