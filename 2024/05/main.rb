@@ -1,38 +1,55 @@
-raise "usage: main.rb FILENAME" if ARGV.size == 0
-
 # Part 1
 
-a_b_map = {}
-i = 0
-lines = File.readlines(ARGV[0]).map(&:chomp)
-# order values
-while i < lines.size - 1 do
-  if lines[i].size == 0
-    i += 1
-    break
-  end
+class Part1
+  attr_accessor :lines, :pairs, :sequences
 
-  a, b = lines[i].split('|').map(&:to_i)
-  a_b_map[a] ||= Set.new ; a_b_map[b] ||= Set.new
-  a_b_map[a] += [b]
-  i += 1
-end
+  def initialize
+    @lines = File.readlines(ARGV[0]).map(&:chomp)
+    @pairs = []
+    @sequences = []
 
-# page sequences
-total = 0
+    i = 0
+    while i < lines.size - 1 do
+      if lines[i].size == 0
+        i += 1
+        break
+      end
+      @pairs << lines[i].split('|').map(&:to_i)
+      i += 1
+    end
 
-while i < lines.size - 1 do
-  l = lines[i].split(',').map(&:to_i)
-  valid = true
-  0.upto(l.size - 2) do |j|
-    if !a_b_map[l[j]].include?(l[j+1])
-      valid = false
-      break
+    while i < lines.size - 1 do
+      @sequences << lines[i].split(',').map(&:to_i)
+      i += 1
     end
   end
-  total += l[l.size/2] if valid
 
-  i += 1
+  def solve
+    a_b_map = {}
+
+    @pairs.each do |a, b|
+      a_b_map[a] ||= Set.new ; a_b_map[b] ||= Set.new
+      a_b_map[a] += [b]
+    end
+
+    total = 0
+
+    @sequences.each do |sequence|
+      valid = true
+      0.upto(sequence.size - 2) do |i|
+        if !a_b_map[sequence[i]].include?(sequence[i+1])
+          valid = false
+          break
+        end
+      end
+      total += sequence[sequence.size/2] if valid
+    end
+
+    total
+  end
 end
 
-puts "part1: #{total}"
+raise "usage: main.rb FILENAME" if ARGV.size == 0
+
+part1 = Part1.new
+puts part1.solve
