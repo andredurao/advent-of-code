@@ -1,178 +1,50 @@
-https://adventofcode.com/2024/day/6
+* (https://adventofcode.com/2024/day/7#part2)[link]
 
---- Day 6: Guard Gallivant ---
-The Historians use their fancy device again, this time to whisk you all away to the North Pole prototype suit manufacturing lab... in the year 1518! It turns out that having direct access to history is very convenient for a group of historians.
+--- Day 7: Bridge Repair ---
+The Historians take you to a familiar rope bridge over a river in the middle of a jungle. The Chief isn't on this side of the bridge, though; maybe he's on the other side?
 
-You still have to be careful of time paradoxes, and so it will be important to avoid anyone from 1518 while The Historians search for the Chief. Unfortunately, a single guard is patrolling this part of the lab.
+When you go to cross the bridge, you notice a group of engineers trying to repair it. (Apparently, it breaks pretty frequently.) You won't be able to cross until it's fixed.
 
-Maybe you can work out where the guard will go ahead of time so that The Historians can search safely?
+You ask how long it'll take; the engineers tell you that it only needs final calibrations, but some young elephants were playing nearby and stole all the operators from their calibration equations! They could finish the calibrations if only someone could determine which test values could possibly be produced by placing any combination of operators into their calibration equations (your puzzle input).
 
-You start by making a map (your puzzle input) of the situation. For example:
+For example:
 
-....#.....
-.........#
-..........
-..#.......
-.......#..
-..........
-.#..^.....
-........#.
-#.........
-......#...
-The map shows the current position of the guard with ^ (to indicate the guard is currently facing up from the perspective of the map). Any obstructions - crates, desks, alchemical reactors, etc. - are shown as #.
+190: 10 19
+3267: 81 40 27
+83: 17 5
+156: 15 6
+7290: 6 8 6 15
+161011: 16 10 13
+192: 17 8 14
+21037: 9 7 18 13
+292: 11 6 16 20
+Each line represents a single equation. The test value appears before the colon on each line; it is your job to determine whether the remaining numbers can be combined with operators to produce the test value.
 
-Lab guards in 1518 follow a very strict patrol protocol which involves repeatedly following these steps:
+Operators are always evaluated left-to-right, not according to precedence rules. Furthermore, numbers in the equations cannot be rearranged. Glancing into the jungle, you can see elephants holding two different types of operators: add (+) and multiply (*).
 
-If there is something directly in front of you, turn right 90 degrees.
-Otherwise, take a step forward.
-Following the above protocol, the guard moves up several times until she reaches an obstacle (in this case, a pile of failed suit prototypes):
+Only three of the above equations can be made true by inserting operators:
 
-....#.....
-....^....#
-..........
-..#.......
-.......#..
-..........
-.#........
-........#.
-#.........
-......#...
-Because there is now an obstacle in front of the guard, she turns right before continuing straight in her new facing direction:
+190: 10 19 has only one position that accepts an operator: between 10 and 19. Choosing + would give 29, but choosing * would give the test value (10 * 19 = 190).
+3267: 81 40 27 has two positions for operators. Of the four possible configurations of the operators, two cause the right side to match the test value: 81 + 40 * 27 and 81 * 40 + 27 both equal 3267 (when evaluated left-to-right)!
+292: 11 6 16 20 can be solved in exactly one way: 11 + 6 * 16 + 20.
+The engineers just need the total calibration result, which is the sum of the test values from just the equations that could possibly be true. In the above example, the sum of the test values for the three equations listed above is 3749.
 
-....#.....
-........>#
-..........
-..#.......
-.......#..
-..........
-.#........
-........#.
-#.........
-......#...
-Reaching another obstacle (a spool of several very long polymers), she turns right again and continues downward:
+Determine which equations could possibly be true. What is their total calibration result?
 
-....#.....
-.........#
-..........
-..#.......
-.......#..
-..........
-.#......v.
-........#.
-#.........
-......#...
-This process continues for a while, but the guard eventually leaves the mapped area (after walking past a tank of universal solvent):
+Your puzzle answer was 7710205485870.
 
-....#.....
-.........#
-..........
-..#.......
-.......#..
-..........
-.#........
-........#.
-#.........
-......#v..
-By predicting the guard's route, you can determine which specific positions in the lab will be in the patrol path. Including the guard's starting position, the positions visited by the guard before leaving the area are marked with an X:
-
-....#.....
-....XXXXX#
-....X...X.
-..#.X...X.
-..XXXXX#X.
-..X.X.X.X.
-.#XXXXXXX.
-.XXXXXXX#.
-#XXXXXXX..
-......#X..
-In this example, the guard will visit 41 distinct positions on your map.
-
-Predict the path of the guard. How many distinct positions will the guard visit before leaving the mapped area?
+The first half of this puzzle is complete! It provides one gold star: *
 
 --- Part Two ---
-While The Historians begin working around the guard's patrol route, you borrow their fancy device and step outside the lab. From the safety of a supply closet, you time travel through the last few months and record the nightly status of the lab's guard post on the walls of the closet.
+The engineers seem concerned; the total calibration result you gave them is nowhere close to being within safety tolerances. Just then, you spot your mistake: some well-hidden elephants are holding a third type of operator.
 
-Returning after what seems like only a few seconds to The Historians, they explain that the guard's patrol area is simply too large for them to safely search the lab without getting caught.
+The concatenation operator (||) combines the digits from its left and right inputs into a single number. For example, 12 || 345 would become 12345. All operators are still evaluated left-to-right.
 
-Fortunately, they are pretty sure that adding a single new obstruction won't cause a time paradox. They'd like to place the new obstruction in such a way that the guard will get stuck in a loop, making the rest of the lab safe to search.
+Now, apart from the three equations that could be made true using only addition and multiplication, the above example has three more equations that can be made true by inserting operators:
 
-To have the lowest chance of creating a time paradox, The Historians would like to know all of the possible positions for such an obstruction. The new obstruction can't be placed at the guard's starting position - the guard is there right now and would notice.
+156: 15 6 can be made true through a single concatenation: 15 || 6 = 156.
+7290: 6 8 6 15 can be made true using 6 * 8 || 6 * 15.
+192: 17 8 14 can be made true using 17 || 8 + 14.
+Adding up all six test values (the three that could be made before using only + and * plus the new three that can now be made by also using ||) produces the new total calibration result of 11387.
 
-In the above example, there are only 6 different positions where a new obstruction would cause the guard to get stuck in a loop. The diagrams of these six situations use O to mark the new obstruction, | to show a position where the guard moves up/down, - to show a position where the guard moves left/right, and + to show a position where the guard moves both up/down and left/right.
-
-Option one, put a printing press next to the guard's starting position:
-
-....#.....
-....+---+#
-....|...|.
-..#.|...|.
-....|..#|.
-....|...|.
-.#.O^---+.
-........#.
-#.........
-......#...
-Option two, put a stack of failed suit prototypes in the bottom right quadrant of the mapped area:
-
-
-....#.....
-....+---+#
-....|...|.
-..#.|...|.
-..+-+-+#|.
-..|.|.|.|.
-.#+-^-+-+.
-......O.#.
-#.........
-......#...
-Option three, put a crate of chimney-squeeze prototype fabric next to the standing desk in the bottom right quadrant:
-
-....#.....
-....+---+#
-....|...|.
-..#.|...|.
-..+-+-+#|.
-..|.|.|.|.
-.#+-^-+-+.
-.+----+O#.
-#+----+...
-......#...
-Option four, put an alchemical retroencabulator near the bottom left corner:
-
-....#.....
-....+---+#
-....|...|.
-..#.|...|.
-..+-+-+#|.
-..|.|.|.|.
-.#+-^-+-+.
-..|...|.#.
-#O+---+...
-......#...
-Option five, put the alchemical retroencabulator a bit to the right instead:
-
-....#.....
-....+---+#
-....|...|.
-..#.|...|.
-..+-+-+#|.
-..|.|.|.|.
-.#+-^-+-+.
-....|.|.#.
-#..O+-+...
-......#...
-Option six, put a tank of sovereign glue right next to the tank of universal solvent:
-
-....#.....
-....+---+#
-....|...|.
-..#.|...|.
-..+-+-+#|.
-..|.|.|.|.
-.#+-^-+-+.
-.+----++#.
-#+----++..
-......#O..
-It doesn't really matter what you choose to use as an obstacle so long as you and The Historians can put it into position without the guard noticing. The important thing is having enough options that you can find one that minimizes time paradoxes, and in this example, there are 6 different positions you could choose.
-
-You need to get the guard stuck in a loop by adding a single new obstruction. How many different positions could you choose for this obstruction?
+Using your new knowledge of elephant hiding spots, determine which equations could possibly be true. What is their total calibration result?
