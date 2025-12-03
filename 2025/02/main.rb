@@ -19,19 +19,52 @@ def fake_id(n)
   "#{n}#{n}".to_i
 end
 
-def part1
-  ranges = get_ranges
-  part1 = 0
+def part1(ranges)
+  res = 0
 
   ranges.each do |range|
     range[0].upto(range[1]) do |n|
       if n == fake_id(half(n))
-        part1 += n
+        res += n
       end
     end
   end
 
-  puts "part 1: #{part1}"
+  puts "part 1: #{res}"
 end
 
-part1
+def part2(ranges)
+  res = 0
+
+  ranges.each do |range|
+    range[0].upto(range[1]) do |n|
+      str = n.to_s
+      next if str.size < 2
+      block = str[0..(str.size/2-1)]
+      while(block.size > 0) do
+        mult = str.size / block.size
+
+        if str.size % mult != 0
+          block = block[..-2]
+          next
+        end
+
+        repeated_block = block * mult
+        if repeated_block == str
+          res += n
+          break
+        end
+
+        block = block[..-2]
+      end
+
+    end
+  end
+
+  puts "part 2: #{res}"
+end
+
+ranges = get_ranges
+
+part1(ranges)
+part2(ranges)
