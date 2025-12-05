@@ -47,6 +47,41 @@ def part1(map)
   puts "part1: #{res}"
 end
 
+def remove_items(map)
+  res = 0
+
+  height = map.size
+  width = map[0].size
+  remove_stack = []
+
+  height.times do |i|
+    width.times do |j|
+      pos = [i,j]
+      remove_stack << pos if map[i][j] == ?@ && neighbours(map, pos) < 4
+    end
+  end
+
+  remove_stack.each{|pos| map[pos[0]][pos[1]] = ?.}
+  [map, remove_stack.size]
+end
+
+def print_map(map)
+  map.each{|line| puts line.join} ; nil
+end
+
+def part2(map)
+  res = 0
+  while true
+    map, qty = remove_items(map)
+    res += qty
+    break if qty == 0
+  end
+
+  puts "part2: #{res}"
+end
+
 map = read_map
 
 part1(map)
+part2(map)
+
