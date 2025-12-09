@@ -40,6 +40,41 @@ class Day07
     puts "part 1: #{res}"
   end
 
+  def part2
+    rays = []
+    lines.each_with_index do |line, i|
+      if i == 0
+        rays << {starting_point => 1}
+      else
+        last_rays = rays.last
+        new_rays = {}
+
+        last_rays.each do |ray, memo|
+          if line[ray] == ?^ # split
+            # left
+            if ray > 0
+              new_rays[ray-1] ||= 0
+              new_rays[ray-1] += memo
+            end
+            # right
+            if ray < width-1
+              new_rays[ray+1] ||= 0
+              new_rays[ray+1] += memo
+            end
+          else # no split
+            new_rays[ray] ||= 0
+            new_rays[ray] += memo
+          end
+        end
+
+        rays << new_rays
+      end
+    end
+
+    res = rays.last.values.sum
+    puts "part 2: #{res}"
+  end
+
   private
 
   def read_file(filename)
@@ -55,3 +90,4 @@ end
 
 app = Day07.new
 app.part1
+app.part2
