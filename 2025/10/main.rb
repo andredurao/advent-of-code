@@ -16,6 +16,26 @@ class Machine
     "#{l}"
   end
 
+  def seek_buttons_bfs
+    visited = Set.new([])
+    queue = [[0, 0]]
+
+    while queue.any?
+      value, steps = queue.shift
+      return steps if value == lights_base10
+
+      buttons_base10.each do |n|
+        next_value = value ^ n
+        next if visited.include?(next_value)
+
+        visited << next_value
+        queue << [next_value, steps + 1]
+      end
+    end
+
+    nil
+  end
+
   private
 
   def build_lights_decimal_base10
@@ -69,7 +89,9 @@ class Day10
   def part1
     res = 0
 
-    p machines
+    machines.each do |machine|
+      res += machine.seek_buttons_bfs
+    end
 
     puts "part 1: #{res}"
   end
